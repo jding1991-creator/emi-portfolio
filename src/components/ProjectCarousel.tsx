@@ -167,7 +167,7 @@ export function ProjectCarousel() {
                   background: project.coverGradient,
                   transition: "transform 600ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease",
                 }}
-                onClick={() => navigate(`/works/${project.id}`)}
+                onClick={() => navigate(`/works/${project.slug}`)}
               >
                 {/* Decorative grid lines */}
                 <svg
@@ -266,7 +266,7 @@ export function ProjectCarousel() {
                   background: project.coverGradient,
                   transition: "transform 600ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease",
                 }}
-                onClick={() => navigate(`/works/${project.id}`)}
+                onClick={() => navigate(`/works/${project.slug}`)}
               >
                 {/* Decorative grid lines */}
                 <svg

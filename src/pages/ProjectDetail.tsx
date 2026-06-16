@@ -4,9 +4,9 @@ import { projects } from "../data/projects";
 import { ArrowLeft } from "lucide-react";
 
 export default function ProjectDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { id: slug } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const project = projects.find((p) => p.id === id);
+  const project = projects.find((p) => p.slug === slug);
   const [activeSection, setActiveSection] = useState<string>("");
   const sectionRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
@@ -56,7 +56,7 @@ export default function ProjectDetail() {
     );
   }
 
-  const projectIndex = projects.findIndex((p) => p.id === id);
+  const projectIndex = projects.findIndex((p) => p.slug === slug);
 
   return (
     <main className="pt-28 md:pt-32 pb-24">
@@ -184,9 +184,20 @@ export default function ProjectDetail() {
                     <p key={idx}>{paragraph}</p>
                   ))}
                 </div>
-                {section.hasImage && (
-                  <div className="mt-8 w-full aspect-video rounded-[16px] bg-gradient-to-br from-softpink/50 via-accent/30 to-softyellow/50 flex items-center justify-center">
-                    <span className="font-mono text-xs text-ink/40 tracking-wider uppercase">IMAGE PLACEHOLDER</span>
+                {section.imageCount && section.imageCount > 0 && (
+                  <div className="mt-8 grid gap-4 grid-cols-1 md:grid-cols-2">
+                    {Array.from({ length: section.imageCount }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`${
+                          section.imageCount === 1 ? "md:col-span-2" : ""
+                        } aspect-video rounded-[16px] bg-gradient-to-br from-softpink/50 via-accent/30 to-softyellow/50 flex items-center justify-center`}
+                      >
+                        <span className="font-mono text-xs text-ink/40 tracking-wider uppercase">
+                          IMAGE PLACEHOLDER {section.imageCount > 1 ? i + 1 : ""}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 )}
               </section>

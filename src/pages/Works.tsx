@@ -26,7 +26,7 @@ export default function Works() {
               aspectRatio: "4 / 5",
               background: p.coverGradient,
             }}
-            onClick={() => navigate(`/works/${p.id}`)}
+            onClick={() => navigate(`/works/${p.slug}`)}
           >
             {/* decorative grid lines */}
             <svg
