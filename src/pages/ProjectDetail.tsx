@@ -186,9 +186,7 @@ export default function ProjectDetail() {
                 </div>
                 {section.hasImage && (
                   <div className="mt-8 w-full aspect-video rounded-[16px] bg-gradient-to-br from-softpink/50 via-accent/30 to-softyellow/50 flex items-center justify-center">
-                    <span className="font-mono text-xs text-ink/40 tracking-wider uppercase">
-                      Image Placeholder
-                    </span>
+                    <span className="font-mono text-xs text-ink/40 tracking-wider uppercase">IMAGE PLACEHOLDER</span>
                   </div>
                 )}
               </section>
