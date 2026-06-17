@@ -16,7 +16,9 @@ export function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 animate-fade-in">
       <nav
-        className={`flex items-center justify-between px-6 md:px-12 py-5 border-0 border-solid border-black transition-all duration-300 backdrop-blur-[50px] bg-[rgba(246,241,236,0.5)]`}
+        className={`flex items-center justify-between px-6 md:px-12 py-5 border-solid transition-all duration-300 backdrop-blur-[50px] bg-[rgba(246,241,236,0.5)] ${
+          isScrolled ? "border-b border-ink/20 shadow-sm" : "border-0"
+        }`}
       >
         <Link
           to="/"

@@ -9,6 +9,8 @@ export default function ProjectDetail() {
   const project = projects.find((p) => p.slug === slug);
   const [activeSection, setActiveSection] = useState<string>("");
   const sectionRefs = useRef<{ [key: string]: HTMLElement | null }>({});
+  const imageObserverRef = useRef<IntersectionObserver | null>(null);
+  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +35,38 @@ export default function ProjectDetail() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [project]);
+
+  useEffect(() => {
+    imageRefs.current = [];
+    imageObserverRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            imageObserverRef.current?.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      }
+    );
+
+    return () => {
+      imageObserverRef.current?.disconnect();
+      imageObserverRef.current = null;
+    };
+  }, [project]);
+
+  const setImageRef = (el: HTMLDivElement | null) => {
+    if (el) {
+      imageRefs.current.push(el);
+      if (imageObserverRef.current) {
+        imageObserverRef.current.observe(el);
+      }
+    }
+  };
 
   const scrollToSection = (sectionId: string) => {
     const element = sectionRefs.current[sectionId];
@@ -76,8 +110,8 @@ export default function ProjectDetail() {
       {/* 项目封面 */}
       <div className="px-6 md:px-12 mb-12">
         <div
-          className="relative w-full rounded-[28px] overflow-hidden"
-          style={{ aspectRatio: "21 / 7", background: project.coverGradient }}
+          className="relative w-full rounded-[28px] overflow-hidden aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/7]"
+          style={{ background: project.coverGradient }}
         >
           {/* decorative grid lines */}
           <svg
@@ -98,24 +132,24 @@ export default function ProjectDetail() {
             ))}
           </svg>
 
-          <div className="absolute top-0 left-0 right-0 p-6 md:p-8 flex items-start justify-between text-white">
-            <span className="font-mono text-[10px] tracking-[0.2em] uppercase opacity-80">
+          <div className="absolute top-0 left-0 right-0 p-4 sm:p-6 md:p-8 flex items-start justify-between text-white">
+            <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.2em] uppercase opacity-80">
               0{projectIndex + 1} · {project.year}
             </span>
           </div>
 
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl leading-tight">
+          <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 text-white">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-6xl lg:text-7xl leading-tight sm:leading-[1.15]">
               {project.title}
             </h1>
-            <p className="mt-3 text-white/85 text-base md:text-lg max-w-xl leading-snug">
+            <p className="mt-2 sm:mt-3 text-white/85 text-sm sm:text-base md:text-lg max-w-xl leading-snug">
               {project.subtitle}
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-2 sm:mt-4 flex flex-wrap gap-2">
               {project.tags.map((t) => (
                 <span
                   key={t}
-                  className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-white/15 backdrop-blur border border-white/20"
+                  className="text-[9px] sm:text-[10px] font-medium px-2 sm:px-2.5 py-1 rounded-full bg-white/15 backdrop-blur border border-white/20"
                 >
                   {t}
                 </span>
@@ -186,18 +220,30 @@ export default function ProjectDetail() {
                 </div>
                 {section.imageCount && section.imageCount > 0 && (
                   <div className="mt-8 grid gap-4 grid-cols-1 md:grid-cols-2">
-                    {Array.from({ length: section.imageCount }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`${
-                          section.imageCount === 1 ? "md:col-span-2" : ""
-                        } aspect-video rounded-[16px] bg-gradient-to-br from-softpink/50 via-accent/30 to-softyellow/50 flex items-center justify-center`}
-                      >
-                        <span className="font-mono text-xs text-ink/40 tracking-wider uppercase">
-                          IMAGE PLACEHOLDER {section.imageCount > 1 ? i + 1 : ""}
-                        </span>
-                      </div>
-                    ))}
+                    {Array.from({ length: section.imageCount }).map((_, i) => {
+                      const imgSrc = section.images?.[i];
+                      return (
+                        <div
+                          key={i}
+                          ref={setImageRef}
+                          className={`${
+                            section.imageCount === 1 ? "md:col-span-2" : ""
+                          } project-image-reveal aspect-video rounded-[16px] bg-gradient-to-br from-softpink/50 via-accent/30 to-softyellow/50 flex items-center justify-center transition-transform duration-400 ease-out hover:scale-[1.02] overflow-hidden`}
+                        >
+                          {imgSrc ? (
+                            <img
+                              src={imgSrc}
+                              alt={section.title}
+                              className="w-full h-full object-contain"
+                            />
+                          ) : (
+                            <span className="font-mono text-xs text-ink/40 tracking-wider uppercase">
+                              IMAGE PLACEHOLDER {section.imageCount > 1 ? i + 1 : ""}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </section>

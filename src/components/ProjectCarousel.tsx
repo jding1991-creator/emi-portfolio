@@ -260,7 +260,9 @@ export function ProjectCarousel() {
             return (
               <article
                 key={`${project.id}-${position}`}
-                className="absolute top-1/2 left-1/2 rounded-[24px] overflow-hidden cursor-pointer"
+                className={`absolute top-1/2 left-1/2 rounded-[24px] overflow-hidden cursor-pointer ${
+                  isCenter ? "shadow-2xl" : "shadow-lg"
+                }`}
                 style={{
                   ...style,
                   background: project.coverGradient,

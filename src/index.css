@@ -82,4 +82,15 @@
     background: #1A1A1A;
     color: #F6F1EC;
   }
+
+  .project-image-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    will-change: opacity, transform;
+  }
+  .project-image-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

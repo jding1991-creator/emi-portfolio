@@ -3,6 +3,7 @@ export interface ProjectSection {
   title: string;
   content: string[];
   imageCount?: number;
+  images?: string[];
 }
 
 export interface Project {
@@ -35,7 +36,8 @@ export const projects: Project[] = [
           "iCTA 是太美医疗科技旗下 eTMF（电子试验主文档）系统的 AI 智能化升级产品。产品定位为「临床试验文件管理生成式人工智能」解决方案，通过 AI Agent 技术重构临床试验中 TMF 文件管理的全链路流程。",
           "核心交付包括：多端 0-1 落地、文件解析 AI Agent、文件自动化归档 AI Agent、智能问答 AI Agent、SaaS 私有云升级改版。"
         ],
-        imageCount: 1
+        imageCount: 1,
+        images: ["/project-images/icta-ai-agent/iCTA Ai Agent Cover.png"]
       },
       {
         id: "challenge",
