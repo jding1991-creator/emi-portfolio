@@ -191,7 +191,7 @@ export function ProjectCarousel() {
                 {/* Top bar */}
                 <div className="absolute top-0 left-0 right-0 p-5 flex items-start justify-between text-white">
                   <span className="font-mono text-[10px] tracking-[0.2em] uppercase opacity-80">
-                    0{index + 1} · {project.year}
+                    {project.number ?? String(index + 1).padStart(2, "0")} · {project.year}
                   </span>
                   <span className="w-8 h-8 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-sm font-bold">
                     ↗
@@ -292,13 +292,12 @@ export function ProjectCarousel() {
                 {/* Top bar */}
                 <div className="absolute top-0 left-0 right-0 p-4 flex items-start justify-between text-white">
                   <span className="font-mono text-[10px] tracking-[0.2em] uppercase opacity-80">
-                    0{index + 1} · {project.year}
+                    {project.number ?? String(index + 1).padStart(2, "0")} · {project.year}
                   </span>
                   <span className="w-7 h-7 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-sm font-bold">
                     ↗
                   </span>
                 </div>
-
                 {/* Bottom info */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                   <h3 className="font-display text-xl leading-tight">{project.title}</h3>

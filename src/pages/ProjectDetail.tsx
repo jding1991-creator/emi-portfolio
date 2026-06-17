@@ -1,7 +1,242 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { projects } from "../data/projects";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X, ChevronLeft, ChevronRight } from "lucide-react";
+
+function Lightbox({
+  images,
+  title,
+  initialIndex,
+  onClose,
+}: {
+  images: string[];
+  title: string;
+  initialIndex: number;
+  onClose: () => void;
+}) {
+  const [index, setIndex] = useState(initialIndex);
+  const touchStartX = useRef<number | null>(null);
+  const touchDeltaX = useRef<number>(0);
+
+  const count = images.length;
+
+  const goTo = useCallback((next: number) => {
+    setIndex(Math.max(0, Math.min(count - 1, next)));
+  }, [count]);
+
+  const prev = useCallback(() => goTo(index - 1), [index, goTo]);
+  const next = useCallback(() => goTo(index + 1), [index, goTo]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowLeft") prev();
+      else if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [prev, next, onClose]);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+  const onTouchEnd = () => {
+    const delta = touchDeltaX.current;
+    const threshold = 50;
+    if (delta > threshold) prev();
+    else if (delta < -threshold) next();
+    touchStartX.current = null;
+    touchDeltaX.current = 0;
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-ink/95 backdrop-blur-sm animate-fade-in"
+      onClick={onClose}
+    >
+      {/* 图片区域 - 单次只显示一张 */}
+      <div
+        className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-24 py-20"
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        <div
+          key={index}
+          className="flex-1 w-full flex items-center justify-center animate-fade-in"
+        >
+          <img
+            src={images[index]}
+            alt={`${title} ${index + 1}`}
+            className="max-w-full max-h-full object-contain select-none"
+            draggable={false}
+          />
+        </div>
+
+        {/* 标题 + 计数 */}
+        <div className="mt-6 flex flex-col items-center gap-3 pointer-events-none">
+          <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-cream/60">
+            {title} · {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
+          </div>
+          {count > 1 && (
+            <div className="flex gap-2">
+              {Array.from({ length: count }).map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === index ? "w-6 bg-cream" : "w-1.5 bg-cream/30"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 控制按钮 - 放到 DOM 末尾确保在最上层 */}
+      <button
+        onClick={(e) => { e.stopPropagation(); onClose(); }}
+        aria-label="关闭预览"
+        className="absolute top-6 right-6 z-10 w-12 h-12 rounded-full bg-cream/10 hover:bg-cream/20 transition-colors flex items-center justify-center text-cream"
+      >
+        <X size={22} strokeWidth={2} />
+      </button>
+
+      {count > 1 && (
+        <>
+          <button
+            onClick={(e) => { e.stopPropagation(); prev(); }}
+            aria-label="上一张"
+            className={`absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-cream/10 hover:bg-cream/20 transition-colors flex items-center justify-center text-cream ${
+              index === 0 ? "opacity-30 pointer-events-none" : ""
+            }`}
+          >
+            <ChevronLeft size={24} strokeWidth={2} />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); next(); }}
+            aria-label="下一张"
+            className={`absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-cream/10 hover:bg-cream/20 transition-colors flex items-center justify-center text-cream ${
+              index === count - 1 ? "opacity-30 pointer-events-none" : ""
+            }`}
+          >
+            <ChevronRight size={24} strokeWidth={2} />
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+function ImageCarousel({
+  count,
+  images,
+  title,
+  setImageRef,
+  onPreview,
+}: {
+  count: number;
+  images?: string[];
+  title: string;
+  setImageRef: (el: HTMLDivElement | null) => void;
+  onPreview: (images: string[], startIndex: number) => void;
+}) {
+  const [index, setIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchDeltaX = useRef<number>(0);
+
+  const goTo = (next: number) => {
+    setIndex(Math.max(0, Math.min(count - 1, next)));
+  };
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+  const onTouchEnd = () => {
+    const delta = touchDeltaX.current;
+    const threshold = 50;
+    if (delta > threshold) goTo(index - 1);
+    else if (delta < -threshold) goTo(index + 1);
+    touchStartX.current = null;
+    touchDeltaX.current = 0;
+  };
+
+  const validImages = images && images.length > 0 ? images : [];
+
+  return (
+    <div
+      ref={setImageRef}
+      className="project-image-reveal aspect-video rounded-[16px] bg-gradient-to-br from-softpink/50 via-accent/30 to-softyellow/50 transition-transform duration-400 ease-out hover:scale-[1.02] overflow-hidden"
+    >
+      <div
+        className="relative w-full h-full overflow-hidden cursor-zoom-in"
+        onClick={() => {
+          if (validImages.length > 0) onPreview(validImages, index);
+        }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        <div
+          className="flex h-full transition-transform duration-500 ease-out"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {Array.from({ length: count }).map((_, i) => {
+            const imgSrc = images?.[i];
+            return (
+              <div
+                key={i}
+                className="flex-shrink-0 w-full h-full flex items-center justify-center"
+              >
+                {imgSrc ? (
+                  <img
+                    src={imgSrc}
+                    alt={`${title} ${i + 1}`}
+                    className="w-full h-full object-contain pointer-events-none"
+                  />
+                ) : (
+                  <span className="font-mono text-xs text-ink/40 tracking-wider uppercase">
+                    IMAGE PLACEHOLDER {i + 1}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {count > 1 && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 pointer-events-none">
+            {Array.from({ length: count }).map((_, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); goTo(i); }}
+                aria-label={`切换到第 ${i + 1} 张图片`}
+                className={`pointer-events-auto h-2 rounded-full transition-all duration-300 ${
+                  i === index ? "w-6 bg-white" : "w-2 bg-white/40 hover:bg-white/70"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function ProjectDetail() {
   const { id: slug } = useParams<{ id: string }>();
@@ -11,6 +246,11 @@ export default function ProjectDetail() {
   const sectionRefs = useRef<{ [key: string]: HTMLElement | null }>({});
   const imageObserverRef = useRef<IntersectionObserver | null>(null);
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [preview, setPreview] = useState<{
+    images: string[];
+    title: string;
+    index: number;
+  } | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -134,7 +374,7 @@ export default function ProjectDetail() {
 
           <div className="absolute top-0 left-0 right-0 p-4 sm:p-6 md:p-8 flex items-start justify-between text-white">
             <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.2em] uppercase opacity-80">
-              0{projectIndex + 1} · {project.year}
+              {project.number ?? String(projectIndex + 1).padStart(2, "0")} · {project.year}
             </span>
           </div>
 
@@ -219,31 +459,44 @@ export default function ProjectDetail() {
                   ))}
                 </div>
                 {section.imageCount && section.imageCount > 0 && (
-                  <div className="mt-8 grid gap-4 grid-cols-1 md:grid-cols-2">
-                    {Array.from({ length: section.imageCount }).map((_, i) => {
-                      const imgSrc = section.images?.[i];
-                      return (
-                        <div
-                          key={i}
-                          ref={setImageRef}
-                          className={`${
-                            section.imageCount === 1 ? "md:col-span-2" : ""
-                          } project-image-reveal aspect-video rounded-[16px] bg-gradient-to-br from-softpink/50 via-accent/30 to-softyellow/50 flex items-center justify-center transition-transform duration-400 ease-out hover:scale-[1.02] overflow-hidden`}
-                        >
-                          {imgSrc ? (
-                            <img
-                              src={imgSrc}
-                              alt={section.title}
-                              className="w-full h-full object-contain"
-                            />
-                          ) : (
-                            <span className="font-mono text-xs text-ink/40 tracking-wider uppercase">
-                              IMAGE PLACEHOLDER {section.imageCount > 1 ? i + 1 : ""}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
+                  <div className="mt-8">
+                    {section.imageCount === 1 ? (
+                      <div
+                        ref={setImageRef}
+                        onClick={() => {
+                          if (section.images?.[0]) {
+                            setPreview({
+                              images: section.images,
+                              title: section.title,
+                              index: 0,
+                            });
+                          }
+                        }}
+                        className="project-image-reveal aspect-video rounded-[16px] bg-gradient-to-br from-softpink/50 via-accent/30 to-softyellow/50 flex items-center justify-center transition-transform duration-400 ease-out hover:scale-[1.02] overflow-hidden cursor-zoom-in"
+                      >
+                        {section.images?.[0] ? (
+                          <img
+                            src={section.images[0]}
+                            alt={section.title}
+                            className="w-full h-full object-contain pointer-events-none"
+                          />
+                        ) : (
+                          <span className="font-mono text-xs text-ink/40 tracking-wider uppercase">
+                            IMAGE PLACEHOLDER
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <ImageCarousel
+                        count={section.imageCount}
+                        images={section.images}
+                        title={section.title}
+                        setImageRef={setImageRef}
+                        onPreview={(imgs, i) =>
+                          setPreview({ images: imgs, title: section.title, index: i })
+                        }
+                      />
+                    )}
                   </div>
                 )}
               </section>
@@ -251,6 +504,15 @@ export default function ProjectDetail() {
           </div>
         </div>
       </div>
+
+      {preview && (
+        <Lightbox
+          images={preview.images}
+          title={preview.title}
+          initialIndex={preview.index}
+          onClose={() => setPreview(null)}
+        />
+      )}
     </main>
   );
 }

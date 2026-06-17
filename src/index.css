@@ -93,4 +93,18 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  .navbar {
+    background: rgba(246, 241, 236, 0.5);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border-bottom: none;
+    transition: background-color 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease;
+  }
+  .navbar-scrolled {
+    background: rgba(246, 241, 236, 0.92);
+    backdrop-filter: blur(80px);
+    -webkit-backdrop-filter: blur(80px);
+    border-bottom: none;
+  }
 }

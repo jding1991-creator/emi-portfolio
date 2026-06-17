@@ -15,6 +15,7 @@ export interface Project {
   coverGradient: string;
   accentSymbol: "x" | "o" | "plus" | "dot" | "diamond";
   year: number;
+  number?: string;
   sections: ProjectSection[];
 }
 
@@ -27,7 +28,8 @@ export const projects: Project[] = [
     tags: ["UX/UI", "Design Strategy", "Agent Design"],
     coverGradient: "linear-gradient(135deg,#F5C9B9 0%,#F07C4C 60%,#1A1A1A 100%)",
     accentSymbol: "x",
-    year: 2025,
+    year: 2026,
+    number: "10",
     sections: [
       {
         id: "summary",
@@ -37,82 +39,135 @@ export const projects: Project[] = [
           "核心交付包括：多端 0-1 落地、文件解析 AI Agent、文件自动化归档 AI Agent、智能问答 AI Agent、SaaS 私有云升级改版。"
         ],
         imageCount: 1,
-        images: ["/project-images/icta-ai-agent/iCTA Ai Agent Cover.png"]
+        images: ["/project-images/icta-ai-agent/icta summary.png"]
       },
       {
         id: "challenge",
-        title: "挑战",
+        title: "项目挑战",
         content: [
           "现有 SaaS eTMF 系统面临三大困境：客户增长缓慢、续单困难；成熟系统架构难以拓展新功能场景；客户侧对垂类临床研究 AI 工具提效诉求日益剧增。",
           "产品目标：在 SaaS 系统内优先验证 AI 使用场景，链路调试 AI 模型工作流，优化场景 Prompt 提示词，稳步落地 AI 商业化。"
+        ],
+        imageCount: 3,
+        images: [
+          "/project-images/icta-ai-agent/challenge-1.png",
+          "/project-images/icta-ai-agent/challenge-2.png",
+          "/project-images/icta-ai-agent/challenge-3.png"
         ]
       },
       {
         id: "research",
-        title: "设计研究",
+        title: "设计调研",
         content: [
           "临床研究 III 期产生超过 15,000 份文件，CRA 需手动归档至 250 份文件目录下，人工耗时超过 500 个工时。",
           "完整 TMF 文件管理业务流程涵盖 8 个步骤：从 CRC 现场文件收集、CRA 核查整理、批量上传、人工填写信息、前置归档、审批确认到最终归档成功。",
           "客户调研覆盖恒瑞医药、康德弘毅、神舟细胞、百济神州等头部药企。1.0 上线后火速收集复星、齐鲁、恩华等 KA 客户反馈，验证 AI Agent 满足市场诉求。"
         ],
-        imageCount: 2
+        imageCount: 2,
+        images: [
+          "/project-images/icta-ai-agent/research-1.png",
+          "/project-images/icta-ai-agent/research-2.png"
+        ]
       },
       {
         id: "design-issue",
-        title: "问题定义",
+        title: "设计策略",
         content: [
           "挖掘出 10 大痛点，涵盖批量上传处理时间太长、文件缺少项目信息需人工补充、文件修订流程不便、CRC 上传文件质量差等。",
           "定义三阶段问题框架：前期（文件收集）聚焦 AI 提高文件识别准确性、质量和完整性；中期（文件归档处理）聚焦自动化归档和批量处理效率；后期（文件审核）聚焦 AI 提高人工审核效率。"
+        ],
+        imageCount: 2,
+        images: [
+          "/project-images/icta-ai-agent/design strategy-1.png",
+          "/project-images/icta-ai-agent/design strategy-2.png"
         ]
       },
       {
         id: "scenario",
-        title: "用户场景",
+        title: "流程优化",
         content: [
           "主要用户为 CRA（临床研究监察员）。",
-          "iCTA 1.0 三阶段流程：上传文件（支持 PDF、PPT、PNG、Word，一次性最多 200 份）→ AI 执行解析（格式校验、查重、识别项目/国家/中心信息、分类、匹配文件计划、生成路径、质量核查、属性填充）→ 人工复核（查看解析结果、判断通过与否、确认归档或按问题归类修订）。",
-          "iCTA 2.0 引入 LLM 对话式人机交互新范式：用户发起指令、查看 AI 执行计划与思维链拆解、监控执行进度、接收任务总结。"
+          "iCTA 1.0 三阶段流程：上传文件（支持 PDF、PPT、PNG、Word，一次性最多 200 份）→ AI 执行解析（格式校验、查重、识别项目/国家/中心信息、分类、匹配文件计划、生成路径、质量核查、属性填充）→ 人工复核（查看解析结果、判断通过与否、确认归档或按问题归类修订）。"
         ],
-        imageCount: 2
+        imageCount: 1,
+        images: ["/project-images/icta-ai-agent/scenario-1.png"]
       },
       {
         id: "prototyping",
-        title: "原型设计",
+        title: "优化方案",
         content: [
           "智能化上传面板围绕三大用户价值主张设计：聚焦上传动作、掌控 AI 处理全过程、轻松处理异常场景。",
-          "定义 4 步交互路径：首次上传（新用户友好引导）、上传预解析中间态（明确状态提示）、追加文件（符合用户情绪的追加时机）、查看 AI 解析结果（按结果分类，消除模糊制造明确）。"
+          "定义 4 步交互路径：首次上传（新用户友好引导）、上传预解析中间态（明确状态提示）、追加文件（符合用户情绪的追加时机）、查看 AI 解析结果（按结果分类，消除模糊制造明确）。",
+          "iCTA 1.0 首页体验改版与品牌升级，定义科技感元素：立体 3D 感、弥散质感，主体色为深蓝到紫色渐变。"
         ],
-        imageCount: 2
+        imageCount: 8,
+        images: [
+          "/project-images/icta-ai-agent/design-1.png",
+          "/project-images/icta-ai-agent/design-2.png",
+          "/project-images/icta-ai-agent/design-3.png",
+          "/project-images/icta-ai-agent/design-4.png",
+          "/project-images/icta-ai-agent/design-5.png",
+          "/project-images/icta-ai-agent/design-6.png",
+          "/project-images/icta-ai-agent/design-7.png",
+          "/project-images/icta-ai-agent/design-8.png"
+        ]
       },
       {
         id: "lofi",
-        title: "低保真",
+        title: "改版成果",
         content: [
-          "通过 Before/After 分析优化：MVP 版本筛选低效难用、批量编辑限制多、无法直观获知文件问题、「未识别」文件过多侵蚀用户信任。",
-          "优化方案引入三种状态卡片：「AI 完成，待归档」（绿色）、「AI 中断，待补充」（粉色）、「全部」（蓝色），并明确展示文件问题数据列，点击即可开启修订面板。",
-          "关键设计洞察：客户对「未识别」提示信息很敏感，实质约 20% 文档本身不包含项目/中心信息，并非 AI 能力问题。"
+          "iCTA 1.0 商业化成果：平均每份文件处理时间从 3 分钟缩短至 15 秒（经过严格验证的数据）。2025 年 6 月上线，9 个试用项目，6 家签约客户，3 家新客户。"
         ],
-        imageCount: 2
+        imageCount: 1,
+        images: ["/project-images/icta-ai-agent/final-1.png"]
       },
       {
         id: "hifi",
-        title: "高保真",
-        content: [
-          "iCTA 1.0 首页体验改版与品牌升级，定义科技感元素：立体 3D 感、弥散质感，主体色为深蓝到紫色渐变。",
-          "三端导航结构与集团 Wiz AI 平台融合：一级主页承载业务 Agent，二级 Agent 功能页面承载独立对话窗口，三级辅助页面承载文件预览。",
-          "iCTA 2.0 对话式交互界面包含 Agent 工作空间（对话区、文件列表、文件预览面板），展示 AI 思维链拆解过程和实时进度反馈。"
-        ],
-        imageCount: 3
+        title: "设计迭代",
+        content: [],
+        imageCount: 1,
+        images: ["/project-images/icta-ai-agent/iterations-1.png"]
       },
       {
         id: "showcase",
-        title: "最终展示",
+        title: "AI 创新",
+        content: [],
+        imageCount: 4,
+        images: [
+          "/project-images/icta-ai-agent/ai innovaion-1.png",
+          "/project-images/icta-ai-agent/ai innovaion-2.png",
+          "/project-images/icta-ai-agent/ai innovaion-3.png",
+          "/project-images/icta-ai-agent/ai innovaion-4.png"
+        ]
+      },
+      {
+        id: "innovation",
+        title: "创新方案",
         content: [
-          "iCTA 1.0 商业化成果：平均每份文件处理时间从 3 分钟缩短至 15 秒（经过严格验证的数据）。2025 年 6 月上线，9 个试用项目，6 家签约客户，3 家新客户。",
-          "iCTA 2.0 于 2025 年 9 月如期发布上线，迅速签约 3 家新客户，进一步验证 AI 在临床文件管理场景的商业化可行性。",
-          "下一步计划：利用 RAG 技术拓展临床研究企业知识库。"
+          "三端导航结构与集团 Wiz AI 平台融合：一级主页承载业务 Agent，二级 Agent 功能页面承载独立对话窗口，三级辅助页面承载文件预览。",
+          "iCTA 2.0 对话式交互界面包含 Agent 工作空间（对话区、文件列表、文件预览面板），展示 AI 思维链拆解过程和实时进度反馈。"
         ],
-        imageCount: 2
+        imageCount: 9,
+        images: [
+          "/project-images/icta-ai-agent/agentic design-1.png",
+          "/project-images/icta-ai-agent/agentic design-2.png",
+          "/project-images/icta-ai-agent/agentic design-3.png",
+          "/project-images/icta-ai-agent/agentic design-4.png",
+          "/project-images/icta-ai-agent/agentic design-5.png",
+          "/project-images/icta-ai-agent/agentic design-6.png",
+          "/project-images/icta-ai-agent/agentic design-7.png",
+          "/project-images/icta-ai-agent/agentic design-8.png",
+          "/project-images/icta-ai-agent/agentic design-9.png"
+        ]
+      },
+      {
+        id: "innovation-result",
+        title: "落地成果",
+        content: [
+          "iCTA 2.0 于 2025 年 9 月如期发布上线，迅速签约 3 家新客户，进一步验证 AI 在临床文件管理场景的商业化可行性。"
+        ],
+        imageCount: 1,
+        images: ["/project-images/icta-ai-agent/new final-1.png"]
       }
     ]
   },

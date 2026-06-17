@@ -49,7 +49,7 @@ export default function Works() {
 
             <div className="absolute top-0 left-0 right-0 p-5 flex items-start justify-between text-white">
               <span className="font-mono text-[10px] tracking-[0.2em] uppercase opacity-80">
-                0{i + 1} · {p.year}
+                {p.number ?? String(i + 1).padStart(2, "0")} · {p.year}
               </span>
               <span className="w-8 h-8 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-sm font-bold group-hover:rotate-45 group-hover:bg-white group-hover:text-ink transition-all duration-500">↗</span>
             </div>
